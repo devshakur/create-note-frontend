@@ -1,10 +1,10 @@
-import SidebarCreateNoteButton from './sidebar/SidebarCreateNoteButton'
-import SidebarDivider from './sidebar/SidebarDivider'
-import SidebarFolders from './sidebar/SidebarFolders'
-import SidebarFooter from './sidebar/SidebarFooter'
-import SidebarHeader from './sidebar/SidebarHeader'
-import SidebarNavItem from './sidebar/SidebarNavItem'
-import { SIDEBAR_QUICK_ACTIONS } from './sidebar/constants'
+import SidebarCreateNoteButton from './SidebarCreateNoteButton'
+import SidebarDivider from './SidebarDivider'
+import SidebarFolders from './SidebarFolders'
+import SidebarFooter from './SidebarFooter'
+import SidebarHeader from './SidebarHeader'
+import SidebarNavItem from './SidebarNavItem'
+import { SIDEBAR_QUICK_ACTIONS } from './constants'
 
 const Sidebar = () => {
   return (
