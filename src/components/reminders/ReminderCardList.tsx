@@ -13,7 +13,7 @@ const ReminderCardList = ({
   onEditCard,
 }: ReminderCardListProps) => {
   return (
-    <HorizontalCarousel>
+    <HorizontalCarousel className="w-full">
       {cards.map((card) => (
         <div key={card.id} className="w-[min(100%,280px)] shrink-0 snap-start sm:w-[280px]">
           <ReminderCard

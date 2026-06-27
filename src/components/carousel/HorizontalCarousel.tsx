@@ -6,9 +6,16 @@ import CarouselNavButton from './CarouselNavButton'
 interface HorizontalCarouselProps {
   children: ReactNode
   className?: string
+  showFade?: boolean
+  fadeColor?: string
 }
 
-const HorizontalCarousel = ({ children, className = '' }: HorizontalCarouselProps) => {
+const HorizontalCarousel = ({
+  children,
+  className = '',
+  showFade = false,
+  fadeColor = '#f3f3f3',
+}: HorizontalCarouselProps) => {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(false)
@@ -59,7 +66,7 @@ const HorizontalCarousel = ({ children, className = '' }: HorizontalCarouselProp
   const showArrows = canScrollLeft || canScrollRight
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative w-full ${className}`}>
       {showArrows ? (
         <CarouselNavButton
           direction="left"
@@ -71,10 +78,20 @@ const HorizontalCarousel = ({ children, className = '' }: HorizontalCarouselProp
 
       <div
         ref={scrollRef}
-        className="flex gap-4 overflow-x-auto scroll-smooth px-1 py-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex w-full gap-4 overflow-x-auto scroll-smooth px-1 py-1 snap-x snap-mandatory [-ms-overflow-style:none] scrollbar-none [&::-webkit-scrollbar]:hidden"
       >
         {children}
       </div>
+
+      {showFade && canScrollRight ? (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 right-0 z-5 w-20"
+          style={{
+            background: `linear-gradient(to left, ${fadeColor}, transparent)`,
+          }}
+        />
+      ) : null}
 
       {showArrows ? (
         <CarouselNavButton
