@@ -1,11 +1,11 @@
 :root {
   --text: #6b6375;
   --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
+  --bg-primary: #fff;
+  --bg-secondary: #e5e4e7;
   --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
+  --primary: #ffbe3b;
+  --secondary: rgba(180, 255, 59, 0.79);
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
