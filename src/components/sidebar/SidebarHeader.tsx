@@ -1,0 +1,33 @@
+import { ChevronsUpDown, Moon } from 'lucide-react'
+
+import { SIDEBAR_APP_NAME, SIDEBAR_USER_NAME } from './constants'
+
+const SidebarHeader = () => {
+  return (
+    <div className="flex items-center gap-3 px-3 py-4">
+      <div
+        aria-hidden="true"
+        className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#d4ff3f]"
+      >
+        <Moon className="size-4 text-neutral-900" strokeWidth={2.5} />
+      </div>
+
+      <div className="min-w-0 flex-1 text-left">
+        <p className="truncate text-sm font-semibold text-neutral-900">
+          {SIDEBAR_APP_NAME}
+        </p>
+        <p className="truncate text-xs text-neutral-500">{SIDEBAR_USER_NAME}</p>
+      </div>
+
+      <button
+        type="button"
+        className="rounded-md p-1 text-neutral-500 transition-colors hover:bg-neutral-200/70 hover:text-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-400"
+        aria-label="Switch workspace"
+      >
+        <ChevronsUpDown className="size-4" aria-hidden="true" />
+      </button>
+    </div>
+  )
+}
+
+export default SidebarHeader
