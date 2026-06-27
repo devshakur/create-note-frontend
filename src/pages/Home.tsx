@@ -1,24 +1,23 @@
-import { useState } from 'react';
+import { useState } from 'react'
+import NotesPageHeader from '../components/notes/NotesPageHeader'
 import type { NoteTimeFilterValue } from '../components/notes/types'
-import NoteTimeFilter from '../components/notes/NoteTimeFilter'
-import ReminderCard from '../components/reminders/ReminderCard'
-import ReminderCardList from '../components/reminders/ReminderCardList';
-import { REMINDER_HEADER_COLORS } from '../components/reminders/constants'
-
+import ReminderCardList from '../components/reminders/ReminderCardList'
+import SidebarDivider from '../components/sidebar/SidebarDivider'
 
 const Home = () => {
-    const [filter, setFilter] = useState<NoteTimeFilterValue>('today')
+  const [filter, setFilter] = useState<NoteTimeFilterValue>('today')
 
   return (
-    <div>
-    <div className='w-full flex items-center justify-between p-10'>
-        <h3 className='text-xl font-semibold'>My Notes</h3>
-        <NoteTimeFilter value={filter} onChange={setFilter} />
-        </div>
-        <div className="p-4">
-        <ReminderCardList />  
-        </div>
-        </div>
+    <div className="flex h-full flex-col ">
+      <NotesPageHeader title="My Notes" value={filter} onChange={setFilter} className='md:p-10' />
+      <div className="px-4 pb-4 md:px-12">
+        <ReminderCardList />
+      </div>
+      <div className='px-6'>
+        <SidebarDivider />
+      </div>
+      <NotesPageHeader title="Recent Folders" value={filter} onChange={setFilter} />
+    </div>
   )
 }
 

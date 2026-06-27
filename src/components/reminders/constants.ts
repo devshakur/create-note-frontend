@@ -31,7 +31,7 @@ export const SAMPLE_REMINDER_CARDS: ReminderCardData[] = [
     ],
   },
   {
-    id: 'reminders-lavender',
+    id: 'reminders-lavender-2',
     title: 'Reminders',
     time: '8:00 PM',
     headerColor: REMINDER_HEADER_COLORS.lavender,
@@ -43,7 +43,7 @@ export const SAMPLE_REMINDER_CARDS: ReminderCardData[] = [
     ],
   },
   {
-    id: 'reminders-peach',
+    id: 'reminders-peach-2',
     title: 'Reminders',
     time: '8:00 PM',
     headerColor: REMINDER_HEADER_COLORS.peach,

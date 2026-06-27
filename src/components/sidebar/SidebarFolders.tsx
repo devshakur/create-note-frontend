@@ -3,7 +3,11 @@ import { ChevronUp, Folder, Plus } from 'lucide-react'
 
 import { SIDEBAR_FOLDERS } from './constants'
 
-const SidebarFolders = () => {
+interface SidebarFoldersProps {
+  onNavigate?: () => void
+}
+
+const SidebarFolders = ({ onNavigate }: SidebarFoldersProps) => {
   const [isExpanded, setIsExpanded] = useState(true)
   const folderListId = useId()
 
@@ -47,6 +51,7 @@ const SidebarFolders = () => {
             <li key={folder.id}>
               <button
                 type="button"
+                onClick={onNavigate}
                 className="w-full rounded-md px-2 py-1.5 text-left text-sm text-neutral-600 transition-colors hover:bg-neutral-200/60 hover:text-neutral-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-400"
               >
                 {folder.name}

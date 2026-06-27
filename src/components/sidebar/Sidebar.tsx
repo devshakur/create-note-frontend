@@ -6,7 +6,11 @@ import SidebarHeader from './SidebarHeader'
 import SidebarNavItem from './SidebarNavItem'
 import { SIDEBAR_QUICK_ACTIONS } from './constants'
 
-const Sidebar = () => {
+interface SidebarProps {
+  onNavigate?: () => void
+}
+
+const Sidebar = ({ onNavigate }: SidebarProps) => {
   return (
     <nav
       aria-label="Main navigation"
@@ -15,20 +19,23 @@ const Sidebar = () => {
       <SidebarHeader />
 
       <div className="flex flex-col gap-1 px-3">
-        <SidebarCreateNoteButton />
+        <SidebarCreateNoteButton onClick={onNavigate} />
         {SIDEBAR_QUICK_ACTIONS.map((item) => (
-          <SidebarNavItem key={item.id} item={item} />
+          <SidebarNavItem
+            key={item.id}
+            item={{ ...item, onClick: onNavigate }}
+          />
         ))}
       </div>
 
       <SidebarDivider />
 
       <div className="flex-1 overflow-y-auto">
-        <SidebarFolders />
+        <SidebarFolders onNavigate={onNavigate} />
       </div>
 
       <SidebarDivider />
-      <SidebarFooter />
+      <SidebarFooter onNavigate={onNavigate} />
     </nav>
   )
 }
