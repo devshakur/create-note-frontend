@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react'
+import { Outlet } from 'react-router-dom'
 import Sidebar from '../components/sidebar/Sidebar'
 import MobileMenuButton from './MobileMenuButton'
 
-interface LayoutProps {
-  children: React.ReactNode
-}
-
-const Layout = ({ children }: LayoutProps) => {
+const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   useEffect(() => {
@@ -52,7 +49,9 @@ const Layout = ({ children }: LayoutProps) => {
         <Sidebar onNavigate={closeSidebar} />
       </aside>
 
-      <main className="min-w-0 flex-1 min-h-screen bg-[#f3f3f3] pt-16 md:pt-0">{children}</main>
+      <main className="min-w-0 flex-1 min-h-screen bg-[#f3f3f3] pt-16 md:pt-0">
+        <Outlet />
+      </main>
     </div>
   )
 }
