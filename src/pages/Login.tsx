@@ -1,15 +1,99 @@
-import { useState } from 'react'
-import { Eye, Lock, Mail, User } from 'lucide-react'
+import { useState, type FormEvent } from 'react'
+import { Lock, Mail, User } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import banner from '../assets/images/createnote_banner.png'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
+import { useAuth } from '../context/useAuth'
+import { useLogin, useRegister } from '../hooks/useAuth'
+import { useCyclingMessage } from '../hooks/useCyclingMessage'
 import RegistrationLayout from '../layouts/RegistrationLayout'
 
 type AuthMode = 'login' | 'signup'
 
+const LOGIN_LOADING_MESSAGES = [
+  'Signing you in...',
+  'Checking your credentials...',
+  'Almost there...',
+  'Welcome back...',
+] as const
+
+const REGISTER_LOADING_MESSAGES = [
+  'Creating account...',
+  'Registering to database...',
+  'Almost there...',
+  'Setting things up...',
+] as const
+
 const Login = () => {
   const [mode, setMode] = useState<AuthMode>('login')
   const isSignUp = mode === 'signup'
+
+  const navigate = useNavigate()
+  const { setUser } = useAuth()
+  const {
+    login,
+    error: loginError,
+    isLoading: isLoginLoading,
+  } = useLogin()
+  const {
+    register,
+    error: registerError,
+    isLoading: isRegisterLoading,
+  } = useRegister()
+
+  const [loginForm, setLoginForm] = useState({ email: '', password: '' })
+  const [signupForm, setSignupForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+  })
+
+  const loginLoadingMessage = useCyclingMessage(
+    isLoginLoading,
+    LOGIN_LOADING_MESSAGES,
+  )
+  const registerLoadingMessage = useCyclingMessage(
+    isRegisterLoading,
+    REGISTER_LOADING_MESSAGES,
+  )
+
+  const isLoginValid =
+    loginForm.email.trim().length > 0 && loginForm.password.trim().length > 0
+  const isSignupValid =
+    signupForm.name.trim().length > 0 &&
+    signupForm.email.trim().length > 0 &&
+    signupForm.password.trim().length > 0
+
+  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!isLoginValid || isLoginLoading) return
+
+    try {
+      const response = await login(loginForm)
+      if (!response) return
+      setUser(response.data)
+      navigate('/dashboard')
+    } catch {
+      // error is catched via loginError
+    }
+  }
+
+  const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!isSignupValid || isRegisterLoading) return
+
+    try {
+      const response = await register(signupForm)
+      if (!response) return
+
+      setLoginForm({ email: signupForm.email, password: '' })
+      setSignupForm({ name: '', email: '', password: '' })
+      setMode('login')
+    } catch {
+      // error is catched via registerError
+    }
+  }
 
   return (
     <RegistrationLayout imageSrc={banner} imageAlt="Your notes, always with you">
@@ -19,7 +103,6 @@ const Login = () => {
             isSignUp ? 'transform-[rotateY(180deg)]' : 'transform-[rotateY(0deg)]'
           }`}
         >
-          {/* Login face */}
           <div
             className={`col-start-1 row-start-1 self-center backface-hidden ${
               isSignUp ? 'pointer-events-none' : ''
@@ -33,7 +116,7 @@ const Login = () => {
             >
               <form
                 className="flex w-full flex-col gap-3 md:w-[80%]"
-                onSubmit={(e) => e.preventDefault()}
+                onSubmit={handleLogin}
               >
                 <Input
                   label="Email"
@@ -41,6 +124,11 @@ const Login = () => {
                   type="email"
                   placeholder="you@example.com"
                   autoComplete="email"
+                  required
+                  value={loginForm.email}
+                  onChange={(e) =>
+                    setLoginForm((prev) => ({ ...prev, email: e.target.value }))
+                  }
                   leftIcon={<Mail className="size-4" />}
                 />
                 <Input
@@ -49,8 +137,15 @@ const Login = () => {
                   type="password"
                   placeholder="Enter your password"
                   autoComplete="current-password"
+                  required
+                  value={loginForm.password}
+                  onChange={(e) =>
+                    setLoginForm((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    }))
+                  }
                   leftIcon={<Lock className="size-4" />}
-                  rightIcon={<Eye className="size-4" />}
                 />
                 <div className="flex items-center justify-between">
                   <label className="flex cursor-pointer items-center gap-1.5 text-xs text-neutral-500">
@@ -68,8 +163,16 @@ const Login = () => {
                     Forgot password?
                   </button>
                 </div>
-                <Button type="submit" variant="primary" fullWidth>
-                  Login
+                {loginError ? (
+                  <p className="text-xs text-red-500">{loginError}</p>
+                ) : null}
+                <Button
+                  type="submit"
+                  variant="primary"
+                  fullWidth
+                  disabled={!isLoginValid || isLoginLoading}
+                >
+                  {loginLoadingMessage ?? 'Login'}
                 </Button>
                 <p className="flex items-center justify-center gap-1 text-sm text-neutral-500">
                   Don&apos;t have an account?
@@ -85,7 +188,6 @@ const Login = () => {
             </AuthPanel>
           </div>
 
-          {/* Signup face */}
           <div
             className={`col-start-1 row-start-1 self-center backface-hidden transform-[rotateY(180deg)] ${
               isSignUp ? '' : 'pointer-events-none'
@@ -99,7 +201,7 @@ const Login = () => {
             >
               <form
                 className="flex w-full flex-col gap-3 md:w-[80%]"
-                onSubmit={(e) => e.preventDefault()}
+                onSubmit={handleRegister}
               >
                 <Input
                   label="Name"
@@ -107,6 +209,11 @@ const Login = () => {
                   type="text"
                   placeholder="Your name"
                   autoComplete="name"
+                  required
+                  value={signupForm.name}
+                  onChange={(e) =>
+                    setSignupForm((prev) => ({ ...prev, name: e.target.value }))
+                  }
                   leftIcon={<User className="size-4" />}
                 />
                 <Input
@@ -115,6 +222,14 @@ const Login = () => {
                   type="email"
                   placeholder="you@example.com"
                   autoComplete="email"
+                  required
+                  value={signupForm.email}
+                  onChange={(e) =>
+                    setSignupForm((prev) => ({
+                      ...prev,
+                      email: e.target.value,
+                    }))
+                  }
                   leftIcon={<Mail className="size-4" />}
                 />
                 <Input
@@ -123,11 +238,26 @@ const Login = () => {
                   type="password"
                   placeholder="Create a password"
                   autoComplete="new-password"
+                  required
+                  value={signupForm.password}
+                  onChange={(e) =>
+                    setSignupForm((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    }))
+                  }
                   leftIcon={<Lock className="size-4" />}
-                  rightIcon={<Eye className="size-4" />}
                 />
-                <Button type="submit" variant="primary" fullWidth>
-                  Sign up
+                {registerError ? (
+                  <p className="text-xs text-red-500">{registerError}</p>
+                ) : null}
+                <Button
+                  type="submit"
+                  variant="primary"
+                  fullWidth
+                  disabled={!isSignupValid || isRegisterLoading}
+                >
+                  {registerLoadingMessage ?? 'Sign up'}
                 </Button>
                 <p className="flex items-center justify-center gap-1 text-sm text-neutral-500">
                   Already have an account?
