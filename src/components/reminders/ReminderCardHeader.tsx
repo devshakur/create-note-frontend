@@ -11,11 +11,13 @@ const ReminderCardHeader = ({
 }: ReminderCardHeaderProps) => {
   return (
     <header
-      className="flex items-center justify-between px-4 py-3"
+      className="flex items-center justify-between gap-2 px-4 py-3"
       style={{ backgroundColor: headerColor }}
     >
-      <h3 className="m-0 text-base font-semibold text-neutral-900">{title}</h3>
-      <time className="text-sm text-neutral-800">{time}</time>
+      <h3 className="m-0 min-w-0 flex-1 truncate text-base font-semibold text-neutral-900">
+        {title}
+      </h3>
+      <time className="shrink-0 text-sm text-neutral-800">{time}</time>
     </header>
   )
 }

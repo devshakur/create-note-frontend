@@ -30,7 +30,7 @@ const Login = () => {
   const isSignUp = mode === 'signup'
 
   const navigate = useNavigate()
-  const { setUser } = useAuth()
+  const { setSession } = useAuth()
   const {
     login,
     error: loginError,
@@ -71,8 +71,8 @@ const Login = () => {
 
     try {
       const response = await login(loginForm)
-      if (!response) return
-      setUser(response.data)
+      if (!response?.data) return
+      setSession(response.data)
       navigate('/dashboard')
     } catch {
       // error is catched via loginError

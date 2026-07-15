@@ -1,26 +1,31 @@
 import HorizontalCarousel from '../carousel/HorizontalCarousel'
 import ReminderCard from './ReminderCard'
-import { SAMPLE_REMINDER_CARDS } from './constants'
 import type { ReminderCardData } from './types'
 
 interface ReminderCardListProps {
-  cards?: ReminderCardData[]
+  cards: ReminderCardData[]
+  onOpenCard?: (cardId: string) => void
   onEditCard?: (cardId: string) => void
 }
 
 const ReminderCardList = ({
-  cards = SAMPLE_REMINDER_CARDS,
+  cards,
+  onOpenCard,
   onEditCard,
 }: ReminderCardListProps) => {
   return (
     <HorizontalCarousel className="w-full">
       {cards.map((card) => (
-        <div key={card.id} className="w-[min(100%,280px)] shrink-0 snap-start sm:w-[280px]">
+        <div
+          key={card.id}
+          className="h-[360px] w-[min(100%,280px)] shrink-0 snap-start sm:w-[280px]"
+        >
           <ReminderCard
             title={card.title}
             time={card.time}
             headerColor={card.headerColor}
             items={card.items}
+            onOpen={() => onOpenCard?.(card.id)}
             onEdit={() => onEditCard?.(card.id)}
           />
         </div>

@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import CreateNoteModal from '../notes/CreateNoteModal'
 import SidebarCreateNoteButton from './SidebarCreateNoteButton'
 import SidebarDivider from './SidebarDivider'
 import SidebarFolders from './SidebarFolders'
@@ -11,6 +13,15 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ onNavigate }: SidebarProps) => {
+  const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false)
+
+  const openCreateNote = () => setIsCreateNoteOpen(true)
+
+  const closeCreateNote = () => {
+    setIsCreateNoteOpen(false)
+    onNavigate?.()
+  }
+
   return (
     <nav
       aria-label="Main navigation"
@@ -19,7 +30,7 @@ const Sidebar = ({ onNavigate }: SidebarProps) => {
       <SidebarHeader />
 
       <div className="flex flex-col gap-1 px-3">
-        <SidebarCreateNoteButton onClick={onNavigate} />
+        <SidebarCreateNoteButton onClick={openCreateNote} />
         {SIDEBAR_QUICK_ACTIONS.map((item) => (
           <SidebarNavItem
             key={item.id}
@@ -36,6 +47,8 @@ const Sidebar = ({ onNavigate }: SidebarProps) => {
 
       <SidebarDivider />
       <SidebarFooter onNavigate={onNavigate} />
+
+      <CreateNoteModal open={isCreateNoteOpen} onClose={closeCreateNote} />
     </nav>
   )
 }
