@@ -28,7 +28,7 @@ const Layout = () => {
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev)
 
   return (
-    <div className="relative flex  w-full min-w-0">
+    <div className="relative flex w-full min-w-0">
       <MobileMenuButton isOpen={isSidebarOpen} onToggle={toggleSidebar} />
 
       {isSidebarOpen ? (
@@ -49,7 +49,7 @@ const Layout = () => {
         <Sidebar onNavigate={closeSidebar} />
       </aside>
 
-      <main className="min-w-0 flex-1 min-h-screen bg-[#f3f3f3] pt-16 md:pt-0">
+      <main className="min-h-screen min-w-0 flex-1 bg-[#f3f3f3] pt-16 md:pt-0">
         <Outlet />
       </main>
     </div>

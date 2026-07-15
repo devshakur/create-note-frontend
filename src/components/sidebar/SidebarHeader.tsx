@@ -1,8 +1,12 @@
 import { ChevronsUpDown, Moon } from 'lucide-react'
 
-import { SIDEBAR_APP_NAME, SIDEBAR_USER_NAME } from './constants'
+import { useAuth } from '../../context/useAuth'
+import { SIDEBAR_APP_NAME } from './constants'
 
 const SidebarHeader = () => {
+  const { user } = useAuth()
+  const userName = user?.name ?? 'Guest'
+
   return (
     <div className="flex items-center gap-3 px-3 py-4">
       <div
@@ -16,7 +20,7 @@ const SidebarHeader = () => {
         <p className="truncate text-sm font-semibold text-neutral-900">
           {SIDEBAR_APP_NAME}
         </p>
-        <p className="truncate text-xs text-neutral-500">{SIDEBAR_USER_NAME}</p>
+        <p className="truncate text-xs text-neutral-500">{userName}</p>
       </div>
 
       <button

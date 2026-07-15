@@ -16,5 +16,6 @@ export interface ReminderCardProps {
   time: string
   headerColor: string
   items: ReminderItem[]
+  onOpen?: () => void
   onEdit?: () => void
 }

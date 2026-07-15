@@ -18,5 +18,5 @@ export interface AuthUser {
 export interface AuthResponse {
   status: 'success' | 'error'
   data: AuthUser
-  token: string
+  token?: string
 }

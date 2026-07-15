@@ -3,7 +3,6 @@ import { Archive, CircleHelp, Search, Settings } from 'lucide-react'
 import type { SidebarFolder, SidebarNavItemConfig } from './types'
 
 export const SIDEBAR_APP_NAME = 'Take Note'
-export const SIDEBAR_USER_NAME = 'Meet Shakur'
 
 export const SIDEBAR_QUICK_ACTIONS: SidebarNavItemConfig[] = [
   {
@@ -24,7 +23,6 @@ export const SIDEBAR_FOLDERS: SidebarFolder[] = [
   { id: 'bucket-list', name: 'Bucket List' },
   { id: 'finances', name: 'Finances' },
   { id: 'travel-plans', name: 'Travel Plans' },
-
 ]
 
 export const SIDEBAR_FOOTER_ITEMS: SidebarNavItemConfig[] = [
