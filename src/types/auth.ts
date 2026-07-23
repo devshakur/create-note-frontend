@@ -20,3 +20,8 @@ export interface AuthResponse {
   data: AuthUser
   token?: string
 }
+
+export interface LogoutResponse {
+  status: 'success' | 'error'
+  message?: string
+}

@@ -1,8 +1,14 @@
 import { isAxiosError } from 'axios'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
 import noteService from '../services/note.service'
 import type {
   CreateNotePayload,
+  NotesQueryParams,
   UpdateNotePayload,
 } from '../types/note'
 import { noteKeys } from './noteKeys'
@@ -16,18 +22,20 @@ const getErrorMessage = (err: unknown, fallback: string) => {
   return fallback
 }
 
-export const useNotes = () => {
+export const useNotes = (filters: NotesQueryParams = {}) => {
   const query = useQuery({
-    queryKey: noteKeys.all,
+    queryKey: noteKeys.list(filters),
     queryFn: async () => {
-      const response = await noteService.getAll()
+      const response = await noteService.getAll(filters)
       return response.data ?? []
     },
+    placeholderData: keepPreviousData,
   })
 
   return {
     notes: query.data ?? [],
     isLoading: query.isLoading,
+    isFetching: query.isFetching,
     error: query.error
       ? getErrorMessage(query.error, 'Failed to load notes')
       : null,

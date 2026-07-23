@@ -1,6 +1,7 @@
 export const ENDPOINTS = {
   REGISTER: '/auth/register',
   LOGIN: '/auth/login',
+  LOGOUT: '/auth/logout',
   CREATE_NOTE: '/notes/create-note',
   GET_ALL_NOTES: '/notes/all-notes',
   GET_NOTE: (id: string) => `/notes/${id}`,

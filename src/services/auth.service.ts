@@ -3,6 +3,7 @@ import { ENDPOINTS } from '../api/endpoint'
 import type {
   AuthResponse,
   LoginPayload,
+  LogoutResponse,
   RegisterPayload,
 } from '../types/auth'
 
@@ -14,6 +15,11 @@ const authService = {
 
   register: async (payload: RegisterPayload): Promise<AuthResponse> => {
     const response = await api.post<AuthResponse>(ENDPOINTS.REGISTER, payload)
+    return response.data
+  },
+
+  logout: async (): Promise<LogoutResponse> => {
+    const response = await api.post<LogoutResponse>(ENDPOINTS.LOGOUT)
     return response.data
   },
 }
