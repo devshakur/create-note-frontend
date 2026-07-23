@@ -6,6 +6,13 @@ export interface Note {
   updatedAt?: string
 }
 
+export type NotesPeriod = 'today' | 'week' | 'month'
+
+export interface NotesQueryParams {
+  period?: NotesPeriod
+  search?: string
+}
+
 export interface CreateNotePayload {
   title: string
   content: string

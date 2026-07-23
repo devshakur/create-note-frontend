@@ -1,13 +1,27 @@
 import { useState, type FormEvent } from 'react'
 import { Lock, Mail, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import banner from '../assets/images/createnote_banner.png'
+import banner from '../assets/images/createnote_banner.webp'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
 import { useAuth } from '../context/useAuth'
 import { useLogin, useRegister } from '../hooks/useAuth'
 import { useCyclingMessage } from '../hooks/useCyclingMessage'
 import RegistrationLayout from '../layouts/RegistrationLayout'
+
+if (typeof document !== 'undefined') {
+  const preloadId = 'preload-login-banner'
+  if (!document.getElementById(preloadId)) {
+    const link = document.createElement('link')
+    link.id = preloadId
+    link.rel = 'preload'
+    link.as = 'image'
+    link.href = banner
+    link.type = 'image/webp'
+    link.fetchPriority = 'high'
+    document.head.appendChild(link)
+  }
+}
 
 type AuthMode = 'login' | 'signup'
 

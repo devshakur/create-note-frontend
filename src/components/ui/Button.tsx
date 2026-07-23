@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react'
 
 type ButtonVariant = 'primary' | 'outline'
 
-interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'> {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode
   variant?: ButtonVariant
   fullWidth?: boolean
@@ -23,6 +23,7 @@ const Button = ({
   leftIcon,
   type = 'button',
   disabled,
+  className,
   ...props
 }: ButtonProps) => {
   return (
@@ -31,7 +32,7 @@ const Button = ({
       disabled={disabled}
       className={`inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-[filter,background-color] focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60 ${
         variantClasses[variant]
-      } ${fullWidth ? 'w-full' : ''}`}
+      } ${fullWidth ? 'w-full' : ''} ${className ?? ''}`}
       {...props}
     >
       {leftIcon ? (

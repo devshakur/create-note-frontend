@@ -34,7 +34,7 @@ const Layout = () => {
       {isSidebarOpen ? (
         <button
           type="button"
-          className="fixed inset-0 z-40 bg-black/40 md:hidden"
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
           aria-label="Close menu"
           onClick={closeSidebar}
         />
@@ -42,14 +42,14 @@ const Layout = () => {
 
       <aside
         id="app-sidebar"
-        className={`fixed inset-y-0 left-0 z-50 h-full w-[260px] shrink-0 bg-[#f3f3f3] shadow-[4px_0_24px_-4px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-in-out md:relative md:z-10 md:translate-x-0 ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        className={`fixed inset-y-0 left-0 z-50 h-svh w-[min(260px,85vw)] shrink-0 overflow-hidden bg-[#f3f3f3] shadow-[4px_0_24px_-4px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-in-out lg:sticky lg:top-0 lg:z-10 lg:w-60 lg:translate-x-0 lg:self-start ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
         <Sidebar onNavigate={closeSidebar} />
       </aside>
 
-      <main className="min-h-screen min-w-0 flex-1 bg-[#f3f3f3] pt-16 md:pt-0">
+      <main className="min-h-screen min-w-0 flex-1 overflow-y-auto bg-[#f3f3f3] pt-16 lg:pt-0">
         <Outlet />
       </main>
     </div>

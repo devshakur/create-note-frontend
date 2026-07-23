@@ -4,6 +4,7 @@ import authService from '../services/auth.service'
 import type {
   AuthResponse,
   LoginPayload,
+  LogoutResponse,
   RegisterPayload,
 } from '../types/auth'
 
@@ -74,4 +75,34 @@ export const useRegister = () => {
   }
 
   return { register, data, error, isLoading }
+}
+
+export const useLogout = () => {
+  const [data, setData] = useState<LogoutResponse | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const inFlightRef = useRef(false)
+
+  const logout = async () => {
+    if (inFlightRef.current) return
+
+    inFlightRef.current = true
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const response = await authService.logout()
+      setData(response)
+      return response
+    } catch (err) {
+      const message = getErrorMessage(err, 'Logout failed')
+      setError(message)
+      throw err
+    } finally {
+      inFlightRef.current = false
+      setIsLoading(false)
+    }
+  }
+
+  return { logout, data, error, isLoading }
 }

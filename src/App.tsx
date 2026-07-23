@@ -1,32 +1,42 @@
+import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
-import Layout from './layouts/layout'
-import Home from './pages/Home'
 import Login from './pages/Login'
 import ProtectedRoute from './routes/ProtectedRoute'
 import PublicOnlyRoute from './routes/PublicOnlyRoute'
 
+const Layout = lazy(() => import('./layouts/layout'))
+const Home = lazy(() => import('./pages/Home'))
+const SearchNote = lazy(() => import('./pages/SearchNote'))
+const Settings = lazy(() => import('./pages/Settings'))
+
+const RouteFallback = () => (
+  <div className="flex min-h-svh items-center justify-center bg-[#f3f3f3]">
+    <p className="text-sm text-neutral-500">Loading...</p>
+  </div>
+)
+
 function App() {
   return (
-    <Routes>
-      {/* Public routes — redirect to dashboard if already logged in */}
-      <Route element={<PublicOnlyRoute />}>
-        <Route path="/login" element={<Login />} />
-        {/* Register UI currently lives inside Login; keep path for future split */}
-        <Route path="/register" element={<Login />} />
-      </Route>
-
-      {/* Protected routes — Layout only renders when authenticated */}
-      <Route element={<ProtectedRoute />}>
-        <Route element={<Layout />}>
-          <Route path="/dashboard" element={<Home />} />
+    <Suspense fallback={<RouteFallback />}>
+      <Routes>
+        <Route element={<PublicOnlyRoute />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Login />} />
         </Route>
-      </Route>
 
-      {/* Default entry */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="*" element={<Navigate to="/login" replace />} />
-    </Routes>
+        <Route element={<ProtectedRoute />}>
+          <Route element={<Layout />}>
+            <Route path="/dashboard" element={<Home />} />
+            <Route path="/search" element={<SearchNote />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
+        </Route>
+
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </Suspense>
   )
 }
 

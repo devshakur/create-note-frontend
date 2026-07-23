@@ -1,37 +1,51 @@
 import HorizontalCarousel from '../carousel/HorizontalCarousel'
+import { REMINDER_CARD_FRAME_CLASS, REMINDER_CARD_FRAME_GRID } from './cardSize'
 import ReminderCard from './ReminderCard'
-import type { ReminderCardData } from './types'
+import type { ReminderCardAction, ReminderCardData } from './types'
 
 interface ReminderCardListProps {
   cards: ReminderCardData[]
+  layout?: 'carousel' | 'grid'
   onOpenCard?: (cardId: string) => void
-  onEditCard?: (cardId: string) => void
+  onCardAction?: (cardId: string, action: ReminderCardAction) => void
+  deletingCardId?: string | null
 }
 
 const ReminderCardList = ({
   cards,
   onOpenCard,
-  onEditCard,
+  onCardAction,
+  deletingCardId = null,
+  layout = 'carousel',
 }: ReminderCardListProps) => {
-  return (
-    <HorizontalCarousel className="w-full">
-      {cards.map((card) => (
-        <div
-          key={card.id}
-          className="h-[360px] w-[min(100%,280px)] shrink-0 snap-start sm:w-[280px]"
-        >
-          <ReminderCard
-            title={card.title}
-            time={card.time}
-            headerColor={card.headerColor}
-            items={card.items}
-            onOpen={() => onOpenCard?.(card.id)}
-            onEdit={() => onEditCard?.(card.id)}
-          />
-        </div>
-      ))}
-    </HorizontalCarousel>
-  )
+  const content = cards.map((card) => (
+    <div
+      key={card.id}
+      className={
+        layout === 'grid' ? 'w-full' : REMINDER_CARD_FRAME_CLASS
+      }
+    >
+      <ReminderCard
+        title={card.title}
+        time={card.time}
+        headerColor={card.headerColor}
+        items={card.items}
+        onOpen={() => onOpenCard?.(card.id)}
+        onAction={(action) => onCardAction?.(card.id, action)}
+        isDeleting={deletingCardId === card.id}
+      />
+    </div>
+  ))
+
+  if (layout === 'grid') {
+    return (
+      <div className= {REMINDER_CARD_FRAME_GRID}>
+        {content}
+      </div>
+    )
+  }
+
+  return <HorizontalCarousel className="w-full">{content}</HorizontalCarousel>
 }
 
 export default ReminderCardList

@@ -1,5 +1,6 @@
-export { useLogin, useRegister } from './useAuth'
+export { useLogin, useRegister, useLogout } from './useAuth'
 export { useCyclingMessage } from './useCyclingMessage'
+export { useDebouncedValue } from './useDebouncedValue'
 export {
   useNotes,
   useNote,
@@ -8,3 +9,4 @@ export {
   useDeleteNote,
 } from './useNotes'
 export { noteKeys } from './noteKeys'
+

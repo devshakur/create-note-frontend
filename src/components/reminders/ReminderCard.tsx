@@ -1,5 +1,4 @@
-import type { MouseEvent } from 'react'
-import ReminderCardEditButton from './ReminderCardEditButton'
+import ReminderCardActionsMenu from './ReminderCardActionsMenu'
 import ReminderCardHeader from './ReminderCardHeader'
 import ReminderCardItem from './ReminderCardItem'
 import type { ReminderCardProps } from './types'
@@ -13,18 +12,14 @@ const ReminderCard = ({
   headerColor,
   items,
   onOpen,
-  onEdit,
+  onAction,
+  isDeleting = false,
 }: ReminderCardProps) => {
   const previewItems = items.slice(0, PREVIEW_ITEM_COUNT)
   const hasMore = items.length > PREVIEW_ITEM_COUNT
 
   const handleOpen = () => {
     onOpen?.()
-  }
-
-  const handleEdit = (event: MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation()
-    onEdit?.()
   }
 
   return (
@@ -61,7 +56,11 @@ const ReminderCard = ({
       </ul>
 
       <div className="relative flex min-h-12 shrink-0 items-center justify-end bg-white px-3 py-3">
-        <ReminderCardEditButton onClick={handleEdit} title={title} />
+        <ReminderCardActionsMenu
+          title={title}
+          isDeleting={isDeleting}
+          onAction={(action) => onAction?.(action)}
+        />
       </div>
     </article>
   )

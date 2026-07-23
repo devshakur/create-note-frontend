@@ -16,6 +16,10 @@ const RegistrationLayout = ({
           <img
             src={imageSrc}
             alt={imageAlt}
+            width={1100}
+            height={880}
+            fetchPriority="high"
+            decoding="async"
             className="absolute inset-0 h-full w-full object-cover object-top-left"
           />
         ) : (

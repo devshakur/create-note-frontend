@@ -11,11 +11,14 @@ export interface ReminderCardData {
   items: ReminderItem[]
 }
 
+export type ReminderCardAction = 'view' | 'edit' | 'delete'
+
 export interface ReminderCardProps {
   title: string
   time: string
   headerColor: string
   items: ReminderItem[]
   onOpen?: () => void
-  onEdit?: () => void
+  onAction?: (action: ReminderCardAction) => void
+  isDeleting?: boolean
 }

@@ -5,6 +5,7 @@ export interface SidebarNavItemConfig {
   label: string
   icon: LucideIcon
   shortcut?: string
+  path?: string
   onClick?: () => void
 }
 

@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import CreateNoteModal from '../notes/CreateNoteModal'
 import SidebarCreateNoteButton from './SidebarCreateNoteButton'
-import SidebarDivider from './SidebarDivider'
-import SidebarFolders from './SidebarFolders'
 import SidebarFooter from './SidebarFooter'
 import SidebarHeader from './SidebarHeader'
 import SidebarNavItem from './SidebarNavItem'
 import { SIDEBAR_QUICK_ACTIONS } from './constants'
+import { useNavigate } from 'react-router-dom'
 
 interface SidebarProps {
   onNavigate?: () => void
@@ -14,7 +13,7 @@ interface SidebarProps {
 
 const Sidebar = ({ onNavigate }: SidebarProps) => {
   const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false)
-
+  const navigate = useNavigate()
   const openCreateNote = () => setIsCreateNoteOpen(true)
 
   const closeCreateNote = () => {
@@ -29,23 +28,19 @@ const Sidebar = ({ onNavigate }: SidebarProps) => {
     >
       <SidebarHeader />
 
-      <div className="flex flex-col gap-1 px-3">
+      <div className="mt-2 flex flex-col gap-[clamp(0.75rem,2.5vh,1.75rem)] px-3">
         <SidebarCreateNoteButton onClick={openCreateNote} />
         {SIDEBAR_QUICK_ACTIONS.map((item) => (
           <SidebarNavItem
             key={item.id}
-            item={{ ...item, onClick: onNavigate }}
+            item={{ ...item, onClick: item.path ? () => navigate(item.path!) : onNavigate }}
           />
         ))}
       </div>
 
-      <SidebarDivider />
+      
 
-      <div className="flex-1 overflow-y-auto">
-        <SidebarFolders onNavigate={onNavigate} />
-      </div>
-
-      <SidebarDivider />
+      <div className="flex-1" />
       <SidebarFooter onNavigate={onNavigate} />
 
       <CreateNoteModal open={isCreateNoteOpen} onClose={closeCreateNote} />

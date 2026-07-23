@@ -1,24 +1,37 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import CreateNoteModal from '../components/notes/CreateNoteModal'
 import EditNoteModal from '../components/notes/EditNoteModal'
-import NotesPageHeader from '../components/notes/NotesPageHeader'
+import SearchNotesHeader from '../components/notes/SearchNotesHeader'
 import ViewNoteModal from '../components/notes/ViewNoteModal'
+import { NOTE_PERIOD_BY_FILTER } from '../components/notes/constants'
 import { mapNoteToReminderCard } from '../components/notes/utils'
 import type { NoteTimeFilterValue } from '../components/notes/types'
-import FolderCardList from '../components/folders/FolderCardList'
 import ReminderCardList from '../components/reminders/ReminderCardList'
 import ReminderCardSkeletonList from '../components/reminders/ReminderCardSkeletonList'
 import type { ReminderCardAction } from '../components/reminders/types'
-import SidebarDivider from '../components/sidebar/SidebarDivider'
 import EmptyState from '../components/ui/EmptyState'
+import { useDebouncedValue } from '../hooks/useDebouncedValue'
 import { useDeleteNote, useNotes } from '../hooks/useNotes'
 import { useNoteAction } from '../hooks/useNoteAction'
+import type { NotesQueryParams } from '../types/note'
 
-const Home = () => {
-  const [filter, setFilter] = useState<NoteTimeFilterValue>('today')
+const SEARCH_DEBOUNCE_MS = 500
+
+const SearchNote = () => {
+  const [period, setPeriod] = useState<NoteTimeFilterValue>('all')
+  const [search, setSearch] = useState('')
   const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false)
-  const { notes, error, isLoading } = useNotes()
-  const { error: deleteError } = useDeleteNote()
+  const debouncedSearch = useDebouncedValue(search.trim(), SEARCH_DEBOUNCE_MS)
+
+  const filters = useMemo<NotesQueryParams>(() => {
+    const next: NotesQueryParams = {}
+    const mappedPeriod = NOTE_PERIOD_BY_FILTER[period]
+    if (mappedPeriod) next.period = mappedPeriod
+    if (debouncedSearch) next.search = debouncedSearch
+    return next
+  }, [period, debouncedSearch])
+
+  const { notes, error, isLoading, isFetching } = useNotes(filters)
   const {
     viewNote,
     closeEdit,
@@ -29,8 +42,8 @@ const Home = () => {
     openEdit,
     handleDelete,
   } = useNoteAction(notes)
-
   const cards = notes.map(mapNoteToReminderCard)
+  const { error: deleteError } = useDeleteNote()
 
   const handleCardAction = (cardId: string, action: ReminderCardAction) => {
     if (action === 'view') {
@@ -45,11 +58,12 @@ const Home = () => {
   }
 
   return (
-    <div className="mx-auto flex h-full w-full max-w-360 flex-col">
-      <NotesPageHeader
-        title="My Notes"
-        value={filter}
-        onChange={setFilter}
+    <div className="mx-auto w-full max-w-360">
+      <SearchNotesHeader
+        search={search}
+        onSearchChange={setSearch}
+        period={period}
+        onPeriodChange={setPeriod}
       />
       <div className="px-4 pb-2 sm:px-6 xl:px-10">
         {isLoading ? (
@@ -59,25 +73,20 @@ const Home = () => {
         ) : cards.length === 0 ? (
           <EmptyState onAction={() => setIsCreateNoteOpen(true)} />
         ) : (
-          <ReminderCardList
-            cards={cards}
-            onOpenCard={openView}
-            onCardAction={handleCardAction}
-            deletingCardId={deletingCardId}
-          />
+          <div className={isFetching ? 'opacity-70 transition-opacity' : ''}>
+            <ReminderCardList
+              cards={cards}
+              onOpenCard={openView}
+              onCardAction={handleCardAction}
+              deletingCardId={deletingCardId}
+              layout="grid"
+            />
+          </div>
         )}
         {deleteError ? (
           <p className="mt-2 text-sm text-red-500">{deleteError}</p>
         ) : null}
       </div>
-      <div className="px-4 sm:px-6 xl:px-10">
-        <SidebarDivider />
-      </div>
-
-      <div className="px-4 pb-4 sm:px-6 xl:px-10">
-        <FolderCardList />
-      </div>
-
       <CreateNoteModal
         open={isCreateNoteOpen}
         onClose={() => setIsCreateNoteOpen(false)}
@@ -96,4 +105,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default SearchNote

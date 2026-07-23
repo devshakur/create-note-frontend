@@ -1,39 +1,29 @@
-import { Archive, CircleHelp, Search, Settings } from 'lucide-react'
+import { Archive, Home, Search } from 'lucide-react'
 
-import type { SidebarFolder, SidebarNavItemConfig } from './types'
+import type { SidebarNavItemConfig } from './types'
 
 export const SIDEBAR_APP_NAME = 'Take Note'
 
 export const SIDEBAR_QUICK_ACTIONS: SidebarNavItemConfig[] = [
   {
+    id: 'dashboard',
+    label: 'Dashboard',
+    icon: Home,
+    path: '/dashboard',
+  },
+  {
     id: 'search',
-    label: 'Search',
+    label: 'Search Notes',
     icon: Search,
     shortcut: '⌘ S',
+    path: '/search',
   },
   {
     id: 'archives',
     label: 'Archives',
     icon: Archive,
-    shortcut: '⌘ R',
+    shortcut: '⌘ R',  
+    path: '/archives',
   },
 ]
 
-export const SIDEBAR_FOLDERS: SidebarFolder[] = [
-  { id: 'bucket-list', name: 'Bucket List' },
-  { id: 'finances', name: 'Finances' },
-  { id: 'travel-plans', name: 'Travel Plans' },
-]
-
-export const SIDEBAR_FOOTER_ITEMS: SidebarNavItemConfig[] = [
-  {
-    id: 'help',
-    label: 'Help',
-    icon: CircleHelp,
-  },
-  {
-    id: 'settings',
-    label: 'Settings',
-    icon: Settings,
-  },
-]
