@@ -4,6 +4,7 @@ import SidebarCreateNoteButton from './SidebarCreateNoteButton'
 import SidebarFooter from './SidebarFooter'
 import SidebarHeader from './SidebarHeader'
 import SidebarNavItem from './SidebarNavItem'
+import SidebarNavList from './SidebarNavList'
 import { SIDEBAR_QUICK_ACTIONS } from './constants'
 
 interface SidebarProps {
@@ -29,15 +30,22 @@ const Sidebar = ({ onNavigate }: SidebarProps) => {
     >
       <SidebarHeader />
 
-      <div className="mt-2 flex flex-col gap-[clamp(0.75rem,2.5vh,1.75rem)] px-3">
-        <SidebarCreateNoteButton onClick={openCreateNote} />
-        {SIDEBAR_QUICK_ACTIONS.map((item) => (
-          <SidebarNavItem key={item.id} item={item} onNavigate={onNavigate} />
-        ))}
-      </div>
+      <SidebarNavList className="flex min-h-0 flex-1 flex-col px-3">
+        <div className="mt-2 flex flex-col gap-[clamp(0.75rem,2.5vh,1.75rem)]">
+          <div role="listitem">
+            <SidebarCreateNoteButton onClick={openCreateNote} />
+          </div>
+          {SIDEBAR_QUICK_ACTIONS.map((item) => (
+            <div key={item.id} role="listitem">
+              <SidebarNavItem item={item} onNavigate={onNavigate} />
+            </div>
+          ))}
+        </div>
 
-      <div className="flex-1" />
-      <SidebarFooter onNavigate={onNavigate} />
+        <div className="flex-1" aria-hidden="true" />
+
+        <SidebarFooter onNavigate={onNavigate} />
+      </SidebarNavList>
 
       <CreateNoteModal open={isCreateNoteOpen} onClose={closeCreateNote} />
     </nav>

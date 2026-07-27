@@ -1,6 +1,7 @@
 export { useLogin, useRegister, useLogout, useChangePassword } from './useAuth'
 export { useCyclingMessage } from './useCyclingMessage'
 export { useDebouncedValue } from './useDebouncedValue'
+export { useArrowKeyNavigation } from './useArrowKeyNavigation'
 export {
   useNotes,
   useNote,

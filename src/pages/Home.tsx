@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Lightbulb, Sparkles } from 'lucide-react'
 import CreateNoteModal from '../components/notes/CreateNoteModal'
+import DeleteNoteConfirmModal from '../components/notes/DeleteNoteConfirmModal'
 import EditNoteModal from '../components/notes/EditNoteModal'
 import NotesPageHeader from '../components/notes/NotesPageHeader'
 import ViewNoteModal from '../components/notes/ViewNoteModal'
@@ -17,7 +18,7 @@ import { useNoteAction } from '../hooks/useNoteAction'
 import type { NotesQueryParams } from '../types/note'
 
 const Home = () => {
-  const [filter, setFilter] = useState<NoteTimeFilterValue>('today')
+  const [filter, setFilter] = useState<NoteTimeFilterValue>('all')
   const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false)
   const filters = useMemo<NotesQueryParams>(() => {
     const next: NotesQueryParams = {}
@@ -34,9 +35,12 @@ const Home = () => {
     closeView,
     editNote,
     deletingCardId,
+    pendingDeleteNote,
     openView,
     openEdit,
     handleDelete,
+    confirmDelete,
+    cancelDelete,
   } = useNoteAction(notes)
 
   const cards = notes.map(mapNoteToReminderCard)
@@ -154,6 +158,13 @@ const Home = () => {
         open={editNote !== null}
         note={editNote}
         onClose={closeEdit}
+      />
+      <DeleteNoteConfirmModal
+        open={pendingDeleteNote !== null}
+        note={pendingDeleteNote}
+        isDeleting={Boolean(deletingCardId)}
+        onConfirm={() => void confirmDelete()}
+        onClose={cancelDelete}
       />
     </div>
   )

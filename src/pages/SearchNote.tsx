@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import CreateNoteModal from '../components/notes/CreateNoteModal'
+import DeleteNoteConfirmModal from '../components/notes/DeleteNoteConfirmModal'
 import EditNoteModal from '../components/notes/EditNoteModal'
 import SearchNotesHeader from '../components/notes/SearchNotesHeader'
 import ViewNoteModal from '../components/notes/ViewNoteModal'
@@ -38,9 +39,12 @@ const SearchNote = () => {
     closeView,
     editNote,
     deletingCardId,
+    pendingDeleteNote,
     openView,
     openEdit,
     handleDelete,
+    confirmDelete,
+    cancelDelete,
   } = useNoteAction(notes)
   const cards = notes.map(mapNoteToReminderCard)
   const { error: deleteError } = useDeleteNote()
@@ -100,6 +104,13 @@ const SearchNote = () => {
         open={editNote !== null}
         note={editNote}
         onClose={closeEdit}
+      />
+      <DeleteNoteConfirmModal
+        open={pendingDeleteNote !== null}
+        note={pendingDeleteNote}
+        isDeleting={Boolean(deletingCardId)}
+        onConfirm={() => void confirmDelete()}
+        onClose={cancelDelete}
       />
     </div>
   )

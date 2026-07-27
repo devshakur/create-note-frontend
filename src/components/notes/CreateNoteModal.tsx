@@ -82,7 +82,6 @@ const CreateNoteModal = ({ open, onClose, onSave }: CreateNoteModalProps) => {
           required
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          autoFocus
         />
 
         <div className="flex w-full flex-col gap-1.5">
