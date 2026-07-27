@@ -4,8 +4,9 @@ import type { NotesPeriod } from '../../types/note'
 export const NOTE_TIME_FILTER_OPTIONS: NoteTimeFilterOption[] = [
   { id: 'all', label: 'All' },
   { id: 'today', label: 'Today' },
-  { id: 'this-week', label: 'This Week' },
-  { id: 'this-month', label: 'This Month' },
+  { id: 'this-week', label: 'Week' },
+  { id: 'this-month', label: 'Month' },
+  { id: 'this-year', label: 'Year' },
 ]
 
 export const NOTE_PERIOD_BY_FILTER: Record<
@@ -16,4 +17,5 @@ export const NOTE_PERIOD_BY_FILTER: Record<
   today: 'today',
   'this-week': 'week',
   'this-month': 'month',
+  'this-year': 'year',
 }

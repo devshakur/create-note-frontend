@@ -7,6 +7,7 @@ export interface AuthContextValue {
   setSession: (user: AuthUser) => void
   logout: () => void
   isAuthenticated: boolean
+  isLoading: boolean
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null)

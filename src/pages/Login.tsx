@@ -7,6 +7,8 @@ import Input from '../components/ui/Input'
 import { useAuth } from '../context/useAuth'
 import { useLogin, useRegister } from '../hooks/useAuth'
 import { useCyclingMessage } from '../hooks/useCyclingMessage'
+import { queryClient } from '../api/queryClient'
+import { profileQueryOptions } from '../hooks/profileQueryOptions'
 import RegistrationLayout from '../layouts/RegistrationLayout'
 
 if (typeof document !== 'undefined') {
@@ -86,7 +88,9 @@ const Login = () => {
     try {
       const response = await login(loginForm)
       if (!response?.data) return
-      setSession(response.data)
+
+      const profile = await queryClient.fetchQuery(profileQueryOptions)
+      setSession(profile)
       navigate('/dashboard')
     } catch {
       // error is catched via loginError

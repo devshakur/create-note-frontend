@@ -1,26 +1,20 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useUpdateNote } from '../../hooks/useNotes'
 import type { Note } from '../../types/note'
 import Button from '../ui/Button'
 import Input from '../ui/Input'
 import Modal from '../ui/Modal'
 
-interface EditNoteModalProps {
+interface EditNoteModalContentProps {
   open: boolean
-  note: Note | null
+  note: Note
   onClose: () => void
 }
 
-const EditNoteModal = ({ open, note, onClose }: EditNoteModalProps) => {
-  const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
+const EditNoteModalContent = ({ open, note, onClose }: EditNoteModalContentProps) => {
+  const [title, setTitle] = useState(note.title)
+  const [content, setContent] = useState(note.content)
   const { updateNote, error, isLoading } = useUpdateNote()
-
-  useEffect(() => {
-    if (!open || !note) return
-    setTitle(note.title)
-    setContent(note.content)
-  }, [open, note])
 
   const isValid = title.trim().length > 0 && content.trim().length > 0
 
@@ -30,7 +24,7 @@ const EditNoteModal = ({ open, note, onClose }: EditNoteModalProps) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!note || !isValid || isLoading) return
+    if (!isValid || isLoading) return
 
     try {
       await updateNote(note.id, {
@@ -42,8 +36,6 @@ const EditNoteModal = ({ open, note, onClose }: EditNoteModalProps) => {
       // error is surfaced via hook
     }
   }
-
-  if (!note) return null
 
   return (
     <Modal
@@ -109,6 +101,18 @@ const EditNoteModal = ({ open, note, onClose }: EditNoteModalProps) => {
       </form>
     </Modal>
   )
+}
+
+interface EditNoteModalProps {
+  open: boolean
+  note: Note | null
+  onClose: () => void
+}
+
+const EditNoteModal = ({ open, note, onClose }: EditNoteModalProps) => {
+  if (!open || !note) return null
+
+  return <EditNoteModalContent key={note.id} open={open} note={note} onClose={onClose} />
 }
 
 export default EditNoteModal

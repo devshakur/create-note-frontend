@@ -5,7 +5,6 @@ import SidebarFooter from './SidebarFooter'
 import SidebarHeader from './SidebarHeader'
 import SidebarNavItem from './SidebarNavItem'
 import { SIDEBAR_QUICK_ACTIONS } from './constants'
-import { useNavigate } from 'react-router-dom'
 
 interface SidebarProps {
   onNavigate?: () => void
@@ -13,12 +12,14 @@ interface SidebarProps {
 
 const Sidebar = ({ onNavigate }: SidebarProps) => {
   const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false)
-  const navigate = useNavigate()
-  const openCreateNote = () => setIsCreateNoteOpen(true)
+
+  const openCreateNote = () => {
+    setIsCreateNoteOpen(true)
+    onNavigate?.()
+  }
 
   const closeCreateNote = () => {
     setIsCreateNoteOpen(false)
-    onNavigate?.()
   }
 
   return (
@@ -31,14 +32,9 @@ const Sidebar = ({ onNavigate }: SidebarProps) => {
       <div className="mt-2 flex flex-col gap-[clamp(0.75rem,2.5vh,1.75rem)] px-3">
         <SidebarCreateNoteButton onClick={openCreateNote} />
         {SIDEBAR_QUICK_ACTIONS.map((item) => (
-          <SidebarNavItem
-            key={item.id}
-            item={{ ...item, onClick: item.path ? () => navigate(item.path!) : onNavigate }}
-          />
+          <SidebarNavItem key={item.id} item={item} onNavigate={onNavigate} />
         ))}
       </div>
-
-      
 
       <div className="flex-1" />
       <SidebarFooter onNavigate={onNavigate} />

@@ -6,7 +6,7 @@ export interface Note {
   updatedAt?: string
 }
 
-export type NotesPeriod = 'today' | 'week' | 'month'
+export type NotesPeriod = 'today' | 'week' | 'month' | 'year'
 
 export interface NotesQueryParams {
   period?: NotesPeriod
