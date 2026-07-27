@@ -12,20 +12,20 @@ const NoteTimeFilter = ({ value, onChange }: NoteTimeFilterProps) => {
       )
       if (currentIndex === -1) return
 
-      let nextIndex = currentIndex
-
       if (event.key === 'ArrowRight') {
-        nextIndex = (currentIndex + 1) % NOTE_TIME_FILTER_OPTIONS.length
-      } else if (event.key === 'ArrowLeft') {
-        nextIndex =
-          (currentIndex - 1 + NOTE_TIME_FILTER_OPTIONS.length) %
-          NOTE_TIME_FILTER_OPTIONS.length
-      } else {
+        event.preventDefault()
+        const nextIndex = (currentIndex + 1) % NOTE_TIME_FILTER_OPTIONS.length
+        onChange(NOTE_TIME_FILTER_OPTIONS[nextIndex].id as NoteTimeFilterValue)
         return
       }
 
-      event.preventDefault()
-      onChange(NOTE_TIME_FILTER_OPTIONS[nextIndex].id as NoteTimeFilterValue)
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault()
+        const nextIndex =
+          (currentIndex - 1 + NOTE_TIME_FILTER_OPTIONS.length) %
+          NOTE_TIME_FILTER_OPTIONS.length
+        onChange(NOTE_TIME_FILTER_OPTIONS[nextIndex].id as NoteTimeFilterValue)
+      }
     },
     [onChange, value],
   )

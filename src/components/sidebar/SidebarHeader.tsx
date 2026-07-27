@@ -1,6 +1,7 @@
-import { ChevronsUpDown, Moon } from 'lucide-react'
+import { ChevronsUpDown } from 'lucide-react'
 
 import { useAuth } from '../../context/useAuth'
+import UserAvatar from '../ui/UserAvatar'
 import { SIDEBAR_APP_NAME } from './constants'
 
 const SidebarHeader = () => {
@@ -9,12 +10,10 @@ const SidebarHeader = () => {
 
   return (
     <div className="flex items-center gap-3 px-3 py-4">
-      <div
-        aria-hidden="true"
-        className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#d4ff3f]"
-      >
-        <Moon className="size-4 text-neutral-900" strokeWidth={2.5} />
-      </div>
+      <UserAvatar
+        name={userName}
+        profilePicture={user?.profilePicture}
+      />
 
       <div className="min-w-0 flex-1 text-left">
         <p className="truncate text-sm font-semibold text-neutral-900">

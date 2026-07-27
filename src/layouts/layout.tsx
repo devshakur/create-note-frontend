@@ -25,11 +25,11 @@ const Layout = () => {
   }, [isSidebarOpen])
 
   const closeSidebar = () => setIsSidebarOpen(false)
-  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev)
+  const openSidebar = () => setIsSidebarOpen(true)
 
   return (
     <div className="relative flex w-full min-w-0">
-      <MobileMenuButton isOpen={isSidebarOpen} onToggle={toggleSidebar} />
+      <MobileMenuButton isOpen={isSidebarOpen} onOpen={openSidebar} />
 
       {isSidebarOpen ? (
         <button

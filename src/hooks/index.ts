@@ -1,4 +1,4 @@
-export { useLogin, useRegister, useLogout } from './useAuth'
+export { useLogin, useRegister, useLogout, useChangePassword } from './useAuth'
 export { useCyclingMessage } from './useCyclingMessage'
 export { useDebouncedValue } from './useDebouncedValue'
 export {
@@ -9,4 +9,8 @@ export {
   useDeleteNote,
 } from './useNotes'
 export { noteKeys } from './noteKeys'
+export { useProfile, useUpdateProfile, useUploadProfilePicture } from './useProfile'
+export { profileKeys } from './profileKeys'
+export { profileQueryOptions } from './profileQueryOptions'
+
 

@@ -1,4 +1,9 @@
-export type NoteTimeFilterValue = 'all' | 'today' | 'this-week' | 'this-month'
+export type NoteTimeFilterValue =
+  | 'all'
+  | 'today'
+  | 'this-week'
+  | 'this-month'
+  | 'this-year'
 
 export interface NoteTimeFilterOption {
   id: NoteTimeFilterValue

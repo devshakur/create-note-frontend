@@ -3,6 +3,8 @@ import { useRef, useState } from 'react'
 import authService from '../services/auth.service'
 import type {
   AuthResponse,
+  ChangePasswordPayload,
+  ChangePasswordResponse,
   LoginPayload,
   LogoutResponse,
   RegisterPayload,
@@ -105,4 +107,39 @@ export const useLogout = () => {
   }
 
   return { logout, data, error, isLoading }
+}
+
+export const useChangePassword = () => {
+  const [data, setData] = useState<ChangePasswordResponse | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const inFlightRef = useRef(false)
+
+  const changePassword = async (payload: ChangePasswordPayload) => {
+    if (inFlightRef.current) return
+
+    inFlightRef.current = true
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const response = await authService.changePassword(payload)
+      setData(response)
+      return response
+    } catch (err) {
+      const message = getErrorMessage(err, 'Failed to change password')
+      setError(message)
+      throw err
+    } finally {
+      inFlightRef.current = false
+      setIsLoading(false)
+    }
+  }
+
+  const reset = () => {
+    setError(null)
+    setData(null)
+  }
+
+  return { changePassword, data, error, isLoading, reset }
 }

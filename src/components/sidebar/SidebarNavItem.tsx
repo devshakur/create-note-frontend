@@ -4,9 +4,10 @@ import type { SidebarNavItemConfig } from './types'
 
 interface SidebarNavItemProps {
   item: SidebarNavItemConfig
+  onNavigate?: () => void
 }
 
-const SidebarNavItem = ({ item }: SidebarNavItemProps) => {
+const SidebarNavItem = ({ item, onNavigate }: SidebarNavItemProps) => {
   const Icon = item.icon
   const shortcutAttr = item.shortcut?.replace('⌘', 'Meta+').replace(' ', '')
 
@@ -17,6 +18,7 @@ const SidebarNavItem = ({ item }: SidebarNavItemProps) => {
     return (
       <NavLink
         to={item.path}
+        onClick={() => onNavigate?.()}
         aria-keyshortcuts={shortcutAttr}
         className={({ isActive }) =>
           `${baseClasses} ${
@@ -36,7 +38,10 @@ const SidebarNavItem = ({ item }: SidebarNavItemProps) => {
   return (
     <button
       type="button"
-      onClick={item.onClick}
+      onClick={() => {
+        item.onClick?.()
+        onNavigate?.()
+      }}
       className={`${baseClasses} text-neutral-600 hover:bg-neutral-200/60 hover:text-neutral-900`}
       aria-keyshortcuts={shortcutAttr}
     >
