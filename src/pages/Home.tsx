@@ -5,7 +5,7 @@ import DeleteNoteConfirmModal from '../components/notes/DeleteNoteConfirmModal'
 import EditNoteModal from '../components/notes/EditNoteModal'
 import NotesPageHeader from '../components/notes/NotesPageHeader'
 import ViewNoteModal from '../components/notes/ViewNoteModal'
-import { NOTE_PERIOD_BY_FILTER } from '../components/notes/constants'
+import { NOTE_PERIOD_BY_FILTER, NOTE_FILTER_PANEL_ID } from '../components/notes/constants'
 import { mapNoteToReminderCard } from '../components/notes/utils'
 import type { NoteTimeFilterValue } from '../components/notes/types'
 import ReminderCardList from '../components/reminders/ReminderCardList'
@@ -77,6 +77,9 @@ const Home = () => {
     >
       <NotesPageHeader title="My Notes" value={filter} onChange={setFilter} />
       <div
+        id={NOTE_FILTER_PANEL_ID}
+        role="tabpanel"
+        aria-labelledby={`note-filter-${filter}`}
         className={`px-4 pb-2 sm:px-6 xl:px-10 ${
           showEmptyState ? 'flex-1 overflow-hidden' : ''
         }`}

@@ -1,6 +1,8 @@
 import type { NoteTimeFilterOption, NoteTimeFilterValue } from './types'
 import type { NotesPeriod } from '../../types/note'
 
+export const NOTE_FILTER_PANEL_ID = 'note-filter-panel'
+
 export const NOTE_TIME_FILTER_OPTIONS: NoteTimeFilterOption[] = [
   { id: 'all', label: 'All' },
   { id: 'today', label: 'Today' },
