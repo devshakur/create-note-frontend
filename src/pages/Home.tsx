@@ -131,8 +131,8 @@ const Home = () => {
                   {filterLabel.toLowerCase()}.
                 </p>
               </div>
-              <Button type="button" variant="outline" onClick={() => setIsCreateNoteOpen(true)}>
-                <Sparkles className="size-4 ext-(--primary)" aria-hidden />
+              <Button className="text-gray-700" type="button" variant="outline" onClick={() => setIsCreateNoteOpen(true)}>
+                <Sparkles className="size-4 text-(--primary)" aria-hidden />
                 Quick note
               </Button>
             </div>
