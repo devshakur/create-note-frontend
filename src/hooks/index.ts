@@ -8,6 +8,7 @@ export {
   useCreateNote,
   useUpdateNote,
   useDeleteNote,
+  useArchiveNote,
 } from './useNotes'
 export { noteKeys } from './noteKeys'
 export { useProfile, useUpdateProfile, useUploadProfilePicture } from './useProfile'

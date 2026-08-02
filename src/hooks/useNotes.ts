@@ -8,10 +8,18 @@ import {
 import noteService from '../services/note.service'
 import type {
   CreateNotePayload,
+  NotesPagination,
   NotesQueryParams,
   UpdateNotePayload,
 } from '../types/note'
 import { noteKeys } from './noteKeys'
+
+const DEFAULT_PAGINATION: NotesPagination = {
+  page: 1,
+  limit: 20,
+  total: 0,
+  totalPages: 1,
+}
 
 const getErrorMessage = (err: unknown, fallback: string) => {
   if (isAxiosError(err)) {
@@ -27,13 +35,24 @@ export const useNotes = (filters: NotesQueryParams = {}) => {
     queryKey: noteKeys.list(filters),
     queryFn: async () => {
       const response = await noteService.getAll(filters)
-      return response.data ?? []
+      return {
+        notes: response.data ?? [],
+        results: response.results ?? response.data?.length ?? 0,
+        pagination: response.pagination ?? {
+          ...DEFAULT_PAGINATION,
+          page: filters.page ?? 1,
+          limit: filters.limit ?? 20,
+          total: response.data?.length ?? 0,
+        },
+      }
     },
     placeholderData: keepPreviousData,
   })
 
   return {
-    notes: query.data ?? [],
+    notes: query.data?.notes ?? [],
+    results: query.data?.results ?? 0,
+    pagination: query.data?.pagination ?? DEFAULT_PAGINATION,
     isLoading: query.isLoading,
     isFetching: query.isFetching,
     error: query.error
@@ -126,6 +145,26 @@ export const useDeleteNote = () => {
     deleteNote: mutation.mutateAsync,
     error: mutation.error
       ? getErrorMessage(mutation.error, 'Failed to delete note')
+      : null,
+    isLoading: mutation.isPending,
+  }
+}
+
+export const useArchiveNote = () => {
+  const queryClient = useQueryClient()
+
+  const mutation = useMutation({
+    mutationFn: (id: string) => noteService.archive(id),
+    onSuccess: (_data, id) => {
+      void queryClient.invalidateQueries({ queryKey: noteKeys.all })
+      void queryClient.invalidateQueries({ queryKey: noteKeys.detail(id) })
+    },
+  })
+
+  return {
+    archiveNote: mutation.mutateAsync,
+    error: mutation.error
+      ? getErrorMessage(mutation.error, 'Failed to archive note')
       : null,
     isLoading: mutation.isPending,
   }

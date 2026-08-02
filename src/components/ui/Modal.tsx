@@ -15,6 +15,11 @@ const Modal = ({ open, onClose, title, children, footer }: ModalProps) => {
   const titleId = useId()
   const dialogRef = useRef<HTMLDivElement>(null)
   const previouslyFocusedRef = useRef<HTMLElement | null>(null)
+  const onCloseRef = useRef(onClose)
+
+  useEffect(() => {
+    onCloseRef.current = onClose
+  }, [onClose])
 
   useEffect(() => {
     if (!open) return
@@ -22,7 +27,7 @@ const Modal = ({ open, onClose, title, children, footer }: ModalProps) => {
     previouslyFocusedRef.current = document.activeElement as HTMLElement | null
 
     const handleEscape = (event: globalThis.KeyboardEvent) => {
-      if (event.key === 'Escape') onClose()
+      if (event.key === 'Escape') onCloseRef.current()
     }
 
     const previousOverflow = document.body.style.overflow
@@ -40,7 +45,7 @@ const Modal = ({ open, onClose, title, children, footer }: ModalProps) => {
       previouslyFocusedRef.current?.focus()
       previouslyFocusedRef.current = null
     }
-  }, [open, onClose])
+  }, [open])
 
   const handleDialogKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key !== 'Tab') return
@@ -73,7 +78,7 @@ const Modal = ({ open, onClose, title, children, footer }: ModalProps) => {
       <div
         aria-hidden="true"
         className="absolute inset-0 bg-[#1a1814]/45 backdrop-blur-[2px] transition-opacity"
-        onClick={onClose}
+        onClick={() => onCloseRef.current()}
       />
 
       <div
@@ -100,7 +105,7 @@ const Modal = ({ open, onClose, title, children, footer }: ModalProps) => {
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={() => onCloseRef.current()}
             className="shrink-0 rounded-md p-1.5 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-400"
             aria-label="Close"
           >

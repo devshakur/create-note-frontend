@@ -11,7 +11,7 @@ export interface ReminderCardData {
   items: ReminderItem[]
 }
 
-export type ReminderCardAction = 'view' | 'edit' | 'delete'
+export type ReminderCardAction = 'view' | 'edit' | 'archive' | 'delete'
 
 export interface ReminderCardProps {
   title: string
@@ -21,4 +21,6 @@ export interface ReminderCardProps {
   onOpen?: () => void
   onAction?: (action: ReminderCardAction) => void
   isDeleting?: boolean
+  isArchiving?: boolean
+  archiveMode?: 'archive' | 'unarchive'
 }

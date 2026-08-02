@@ -28,28 +28,25 @@ export const useArrowKeyNavigation = ({
       const nextKey = isVertical ? 'ArrowDown' : 'ArrowRight'
       const previousKey = isVertical ? 'ArrowUp' : 'ArrowLeft'
 
-      let nextIndex = currentIndex
+      let nextIndex: number | null = null
 
       if (event.key === nextKey) {
-        event.preventDefault()
         nextIndex = loop
           ? (currentIndex + 1) % items.length
           : Math.min(currentIndex + 1, items.length - 1)
       } else if (event.key === previousKey) {
-        event.preventDefault()
         nextIndex = loop
           ? (currentIndex - 1 + items.length) % items.length
           : Math.max(currentIndex - 1, 0)
       } else if (event.key === 'Home') {
-        event.preventDefault()
         nextIndex = 0
       } else if (event.key === 'End') {
-        event.preventDefault()
         nextIndex = items.length - 1
-      } else {
-        return
       }
 
+      if (nextIndex === null) return
+
+      event.preventDefault()
       items[nextIndex]?.focus()
     },
     [loop, orientation],

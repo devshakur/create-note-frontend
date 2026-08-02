@@ -8,6 +8,7 @@ import PublicOnlyRoute from './routes/PublicOnlyRoute'
 const Layout = lazy(() => import('./layouts/layout'))
 const Home = lazy(() => import('./pages/Home'))
 const SearchNote = lazy(() => import('./pages/SearchNote'))
+const Archives = lazy(() => import('./pages/Archives'))
 const Settings = lazy(() => import('./pages/Settings'))
 
 const RouteFallback = () => (
@@ -29,6 +30,7 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Home />} />
             <Route path="/search" element={<SearchNote />} />
+            <Route path="/archives" element={<Archives />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
         </Route>

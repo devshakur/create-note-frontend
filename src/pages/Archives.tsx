@@ -1,10 +1,9 @@
 import { useMemo, useState } from 'react'
-import CreateNoteModal from '../components/notes/CreateNoteModal'
 import DeleteNoteConfirmModal from '../components/notes/DeleteNoteConfirmModal'
 import EditNoteModal from '../components/notes/EditNoteModal'
-import SearchNotesHeader from '../components/notes/SearchNotesHeader'
+import NotesPageHeader from '../components/notes/NotesPageHeader'
 import ViewNoteModal from '../components/notes/ViewNoteModal'
-import { NOTE_PERIOD_BY_FILTER, NOTE_FILTER_PANEL_ID } from '../components/notes/constants'
+import { NOTE_FILTER_PANEL_ID, NOTE_PERIOD_BY_FILTER } from '../components/notes/constants'
 import { mapNoteToReminderCard } from '../components/notes/utils'
 import type { NoteTimeFilterValue } from '../components/notes/types'
 import ReminderCardList from '../components/reminders/ReminderCardList'
@@ -12,33 +11,29 @@ import ReminderCardSkeletonList from '../components/reminders/ReminderCardSkelet
 import type { ReminderCardAction } from '../components/reminders/types'
 import EmptyState from '../components/ui/EmptyState'
 import Pagination from '../components/ui/Pagination'
-import { useDebouncedValue } from '../hooks/useDebouncedValue'
 import { useDeleteNote, useNotes } from '../hooks/useNotes'
 import { useNoteAction } from '../hooks/useNoteAction'
 import type { NotesQueryParams } from '../types/note'
 
-const SEARCH_DEBOUNCE_MS = 500
 const PAGE_SIZE = 8
 
-const SearchNote = () => {
-  const [period, setPeriod] = useState<NoteTimeFilterValue>('all')
-  const [search, setSearch] = useState('')
+const Archives = () => {
+  const [filter, setFilter] = useState<NoteTimeFilterValue>('all')
   const [page, setPage] = useState(1)
-  const [isCreateNoteOpen, setIsCreateNoteOpen] = useState(false)
-  const debouncedSearch = useDebouncedValue(search.trim(), SEARCH_DEBOUNCE_MS)
 
   const filters = useMemo<NotesQueryParams>(() => {
     const next: NotesQueryParams = {
+      status: 'archived',
       page,
       limit: PAGE_SIZE,
     }
-    const mappedPeriod = NOTE_PERIOD_BY_FILTER[period]
+    const mappedPeriod = NOTE_PERIOD_BY_FILTER[filter]
     if (mappedPeriod) next.period = mappedPeriod
-    if (debouncedSearch) next.search = debouncedSearch
     return next
-  }, [period, debouncedSearch, page])
+  }, [filter, page])
 
   const { notes, error, isLoading, isFetching, pagination } = useNotes(filters)
+  const { error: deleteError } = useDeleteNote()
   const {
     viewNote,
     closeEdit,
@@ -55,8 +50,14 @@ const SearchNote = () => {
     confirmDelete,
     cancelDelete,
   } = useNoteAction(notes)
+
   const cards = notes.map(mapNoteToReminderCard)
-  const { error: deleteError } = useDeleteNote()
+  const showEmptyState = !isLoading && !error && cards.length === 0
+
+  const handleFilterChange = (value: NoteTimeFilterValue) => {
+    setFilter(value)
+    setPage(1)
+  }
 
   const handleCardAction = (cardId: string, action: ReminderCardAction) => {
     if (action === 'view') {
@@ -74,36 +75,37 @@ const SearchNote = () => {
     void handleDelete(cardId)
   }
 
-  const handlePeriodChange = (value: NoteTimeFilterValue) => {
-    setPeriod(value)
-    setPage(1)
-  }
-
-  const handleSearchChange = (value: string) => {
-    setSearch(value)
-    setPage(1)
-  }
-
   return (
-    <div className="mx-auto w-full">
-      <SearchNotesHeader
-        search={search}
-        onSearchChange={handleSearchChange}
-        period={period}
-        onPeriodChange={handlePeriodChange}
-      />
+    <div
+      className={`mx-auto flex h-full w-full flex-col ${
+        showEmptyState ? 'overflow-hidden' : ''
+      }`}
+    >
+      <NotesPageHeader title="Archives" value={filter} onChange={handleFilterChange} />
       <div
         id={NOTE_FILTER_PANEL_ID}
         role="tabpanel"
-        aria-labelledby={`note-filter-${period}`}
-        className="px-4 pb-6 sm:px-6 xl:px-10"
+        aria-labelledby={`note-filter-${filter}`}
+        className={`px-4 pb-6 sm:px-6 xl:px-10 ${
+          showEmptyState ? 'flex-1 overflow-hidden' : ''
+        }`}
       >
         {isLoading ? (
           <ReminderCardSkeletonList count={4} />
         ) : error ? (
           <p className="text-sm text-red-500">{error}</p>
-        ) : cards.length === 0 ? (
-          <EmptyState onAction={() => setIsCreateNoteOpen(true)} />
+        ) : showEmptyState ? (
+          <EmptyState
+            titlePrefix="No archived"
+            titleAccent="notes yet!"
+            description={
+              <>
+                Notes you archive will show up here. Archive a note from the
+                dashboard or search page to keep things tidy.
+              </>
+            }
+            showAction={false}
+          />
         ) : (
           <>
             <div className={isFetching ? 'opacity-70 transition-opacity' : ''}>
@@ -113,6 +115,7 @@ const SearchNote = () => {
                 onCardAction={handleCardAction}
                 deletingCardId={deletingCardId}
                 archivingCardId={archivingCardId}
+                archiveMode="unarchive"
                 layout="grid"
               />
             </div>
@@ -132,10 +135,7 @@ const SearchNote = () => {
           <p className="mt-2 text-sm text-red-500">{archiveError}</p>
         ) : null}
       </div>
-      <CreateNoteModal
-        open={isCreateNoteOpen}
-        onClose={() => setIsCreateNoteOpen(false)}
-      />
+
       <ViewNoteModal
         open={viewNote !== null}
         note={viewNote}
@@ -157,4 +157,4 @@ const SearchNote = () => {
   )
 }
 
-export default SearchNote
+export default Archives

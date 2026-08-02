@@ -35,10 +35,13 @@ const Home = () => {
     closeView,
     editNote,
     deletingCardId,
+    archivingCardId,
     pendingDeleteNote,
+    archiveError,
     openView,
     openEdit,
     handleDelete,
+    handleArchive,
     confirmDelete,
     cancelDelete,
   } = useNoteAction(notes)
@@ -66,12 +69,16 @@ const Home = () => {
       openEdit(cardId)
       return
     }
+    if (action === 'archive') {
+      void handleArchive(cardId)
+      return
+    }
     void handleDelete(cardId)
   }
 
   return (
     <div
-      className={`mx-auto flex h-full w-full max-w-360 flex-col ${
+      className={`mx-auto flex h-full w-full  flex-col ${
         showEmptyState ? 'overflow-hidden' : ''
       }`}
     >
@@ -97,11 +104,15 @@ const Home = () => {
               onOpenCard={openView}
               onCardAction={handleCardAction}
               deletingCardId={deletingCardId}
+              archivingCardId={archivingCardId}
             />
           </div>
         )}
         {deleteError ? (
           <p className="mt-2 text-sm text-red-500">{deleteError}</p>
+        ) : null}
+        {archiveError ? (
+          <p className="mt-2 text-sm text-red-500">{archiveError}</p>
         ) : null}
       </div>
       {showFocusSection ? (
@@ -121,7 +132,7 @@ const Home = () => {
                 </p>
               </div>
               <Button type="button" variant="outline" onClick={() => setIsCreateNoteOpen(true)}>
-                <Sparkles className="size-4 text-neutral-700" aria-hidden />
+                <Sparkles className="size-4 ext-(--primary)" aria-hidden />
                 Quick note
               </Button>
             </div>

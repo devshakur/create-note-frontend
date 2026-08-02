@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState, type MouseEvent } from 'react'
-import { Eye, Pencil, Trash2 } from 'lucide-react'
+import { Archive, ArchiveRestore, Eye, Pencil, Trash2 } from 'lucide-react'
 import ReminderCardEditButton from './ReminderCardEditButton'
 import type { ReminderCardAction } from './types'
 
@@ -7,12 +7,16 @@ interface ReminderCardActionsMenuProps {
   title: string
   onAction: (action: ReminderCardAction) => void
   isDeleting?: boolean
+  isArchiving?: boolean
+  archiveMode?: 'archive' | 'unarchive'
 }
 
 const ReminderCardActionsMenu = ({
   title,
   onAction,
   isDeleting = false,
+  isArchiving = false,
+  archiveMode = 'archive',
 }: ReminderCardActionsMenuProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const menuId = useId()
@@ -78,6 +82,17 @@ const ReminderCardActionsMenu = ({
     onAction(action)
   }
 
+  const isBusy = isDeleting || isArchiving
+  const ArchiveIcon = archiveMode === 'unarchive' ? ArchiveRestore : Archive
+  const archiveLabel =
+    archiveMode === 'unarchive'
+      ? isArchiving
+        ? 'Unarchiving...'
+        : 'Unarchive note'
+      : isArchiving
+        ? 'Archiving...'
+        : 'Archive note'
+
   return (
     <div
       ref={containerRef}
@@ -99,7 +114,7 @@ const ReminderCardActionsMenu = ({
           id={menuId}
           role="menu"
           aria-label={`${title} actions`}
-          className="absolute right-0 bottom-full z-20 mb-2 min-w-[140px] overflow-hidden rounded-xl border border-neutral-200 bg-white py-1 shadow-lg"
+          className="absolute right-0 bottom-full z-20 mb-2 min-w-[160px] overflow-hidden rounded-xl border border-neutral-200 bg-white py-1 shadow-lg"
         >
           <button
             type="button"
@@ -122,7 +137,17 @@ const ReminderCardActionsMenu = ({
           <button
             type="button"
             role="menuitem"
-            disabled={isDeleting}
+            disabled={isBusy}
+            className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-neutral-700 transition-colors hover:bg-neutral-100 focus-visible:bg-neutral-100 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+            onClick={(event) => handleAction(event, 'archive')}
+          >
+            <ArchiveIcon className="size-4 shrink-0" aria-hidden="true" />
+            {archiveLabel}
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            disabled={isBusy}
             className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-red-600 transition-colors hover:bg-red-50 focus-visible:bg-red-50 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
             onClick={(event) => handleAction(event, 'delete')}
           >

@@ -11,5 +11,6 @@ export const ENDPOINTS = {
   GET_NOTE: (id: string) => `/notes/${id}`,
   UPDATE_NOTE: (id: string) => `/notes/update-note/${id}`,
   DELETE_NOTE: (id: string) => `/notes/delete-note/${id}`,
+  ARCHIVE_NOTE: (id: string) => `/notes/note/${id}/archive`,
 }
 

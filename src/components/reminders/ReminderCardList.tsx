@@ -9,6 +9,8 @@ interface ReminderCardListProps {
   onOpenCard?: (cardId: string) => void
   onCardAction?: (cardId: string, action: ReminderCardAction) => void
   deletingCardId?: string | null
+  archivingCardId?: string | null
+  archiveMode?: 'archive' | 'unarchive'
 }
 
 const ReminderCardList = ({
@@ -16,14 +18,14 @@ const ReminderCardList = ({
   onOpenCard,
   onCardAction,
   deletingCardId = null,
+  archivingCardId = null,
+  archiveMode = 'archive',
   layout = 'carousel',
 }: ReminderCardListProps) => {
   const content = cards.map((card) => (
     <div
       key={card.id}
-      className={
-        layout === 'grid' ? 'w-full' : REMINDER_CARD_FRAME_CLASS
-      }
+      className={layout === 'grid' ? 'w-full' : REMINDER_CARD_FRAME_CLASS}
     >
       <ReminderCard
         title={card.title}
@@ -33,16 +35,14 @@ const ReminderCardList = ({
         onOpen={() => onOpenCard?.(card.id)}
         onAction={(action) => onCardAction?.(card.id, action)}
         isDeleting={deletingCardId === card.id}
+        isArchiving={archivingCardId === card.id}
+        archiveMode={archiveMode}
       />
     </div>
   ))
 
   if (layout === 'grid') {
-    return (
-      <div className= {REMINDER_CARD_FRAME_GRID}>
-        {content}
-      </div>
-    )
+    return <div className={REMINDER_CARD_FRAME_GRID}>{content}</div>
   }
 
   return <HorizontalCarousel className="w-full">{content}</HorizontalCarousel>

@@ -14,6 +14,8 @@ const ReminderCard = ({
   onOpen,
   onAction,
   isDeleting = false,
+  isArchiving = false,
+  archiveMode = 'archive',
 }: ReminderCardProps) => {
   const previewItems = items.slice(0, PREVIEW_ITEM_COUNT)
   const hasMore = items.length > PREVIEW_ITEM_COUNT
@@ -59,6 +61,8 @@ const ReminderCard = ({
         <ReminderCardActionsMenu
           title={title}
           isDeleting={isDeleting}
+          isArchiving={isArchiving}
+          archiveMode={archiveMode}
           onAction={(action) => onAction?.(action)}
         />
       </div>

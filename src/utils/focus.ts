@@ -15,6 +15,9 @@ export const getFocusableElements = (container: HTMLElement | null) => {
 export const focusInitialElement = (container: HTMLElement | null) => {
   if (!container) return
 
+  // Don't steal focus if the user already moved into a field inside the dialog.
+  if (container.contains(document.activeElement)) return
+
   const preferred = container.querySelector<HTMLElement>(
     'input:not([disabled]), textarea:not([disabled]), select:not([disabled])',
   )
