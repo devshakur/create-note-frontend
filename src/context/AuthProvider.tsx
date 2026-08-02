@@ -7,6 +7,10 @@ import { AuthContext } from './auth-context'
 
 const LEGACY_USER_KEY = 'auth_user'
 
+const clearAuthenticatedCache = () => {
+  queryClient.clear()
+}
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUserState] = useState<AuthUser | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -23,7 +27,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } catch {
         if (!cancelled) {
           setUserState(null)
-          queryClient.removeQueries({ queryKey: profileKeys.all })
+          clearAuthenticatedCache()
         }
       } finally {
         if (!cancelled) setIsLoading(false)
@@ -38,16 +42,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   const setUser = (next: AuthUser | null) => {
-    setUserState(next)
-    if (next) {
-      queryClient.setQueryData(profileKeys.me(), next)
-    } else {
-      queryClient.removeQueries({ queryKey: profileKeys.all })
+    if (!next) {
+      clearAuthenticatedCache()
+      setUserState(null)
+      return
     }
+
+    setUserState(next)
+    queryClient.setQueryData(profileKeys.me(), next)
   }
 
   const setSession = (nextUser: AuthUser) => {
-    setUser(nextUser)
+    // Drop any previous account's cached notes/profile before binding the new user.
+    clearAuthenticatedCache()
+    setUserState(nextUser)
+    queryClient.setQueryData(profileKeys.me(), nextUser)
   }
 
   const logout = () => {

@@ -1,9 +1,9 @@
 import type { NotesQueryParams } from '../types/note'
 
 export const noteKeys = {
-  all: ['notes'] as const,
-  lists: () => [...noteKeys.all, 'list'] as const,
-  list: (filters: NotesQueryParams = {}) => {
+  all: (userId: string) => ['notes', userId] as const,
+  lists: (userId: string) => [...noteKeys.all(userId), 'list'] as const,
+  list: (userId: string, filters: NotesQueryParams = {}) => {
     const normalized = {
       ...(filters.period ? { period: filters.period } : {}),
       ...(filters.search ? { search: filters.search } : {}),
@@ -11,7 +11,8 @@ export const noteKeys = {
       ...(filters.page ? { page: filters.page } : {}),
       ...(filters.limit ? { limit: filters.limit } : {}),
     }
-    return [...noteKeys.lists(), normalized] as const
+    return [...noteKeys.lists(userId), normalized] as const
   },
-  detail: (id: string) => ['note', id] as const,
+  detail: (userId: string, id: string) =>
+    [...noteKeys.all(userId), 'detail', id] as const,
 }
