@@ -5,6 +5,7 @@ import {
   useQuery,
   useQueryClient,
 } from '@tanstack/react-query'
+import { useAuth } from '../context/useAuth'
 import noteService from '../services/note.service'
 import type {
   CreateNotePayload,
@@ -31,8 +32,11 @@ const getErrorMessage = (err: unknown, fallback: string) => {
 }
 
 export const useNotes = (filters: NotesQueryParams = {}) => {
+  const { user } = useAuth()
+  const userId = user?.id
+
   const query = useQuery({
-    queryKey: noteKeys.list(filters),
+    queryKey: noteKeys.list(userId ?? 'anonymous', filters),
     queryFn: async () => {
       const response = await noteService.getAll(filters)
       return {
@@ -46,14 +50,21 @@ export const useNotes = (filters: NotesQueryParams = {}) => {
         },
       }
     },
-    placeholderData: keepPreviousData,
+    enabled: Boolean(userId),
+    // Keep prior page/filter results only within the same authenticated user.
+    placeholderData: (previousData, previousQuery) => {
+      if (!userId) return undefined
+      const previousUserId = previousQuery?.queryKey?.[1]
+      if (previousUserId !== userId) return undefined
+      return keepPreviousData(previousData)
+    },
   })
 
   return {
     notes: query.data?.notes ?? [],
     results: query.data?.results ?? 0,
     pagination: query.data?.pagination ?? DEFAULT_PAGINATION,
-    isLoading: query.isLoading,
+    isLoading: query.isLoading || !userId,
     isFetching: query.isFetching,
     error: query.error
       ? getErrorMessage(query.error, 'Failed to load notes')
@@ -63,18 +74,21 @@ export const useNotes = (filters: NotesQueryParams = {}) => {
 }
 
 export const useNote = (id: string) => {
+  const { user } = useAuth()
+  const userId = user?.id
+
   const query = useQuery({
-    queryKey: noteKeys.detail(id),
+    queryKey: noteKeys.detail(userId ?? 'anonymous', id),
     queryFn: async () => {
       const response = await noteService.getById(id)
       return response.data
     },
-    enabled: Boolean(id),
+    enabled: Boolean(id) && Boolean(userId),
   })
 
   return {
     note: query.data,
-    isLoading: query.isLoading,
+    isLoading: query.isLoading || !userId,
     error: query.error
       ? getErrorMessage(query.error, 'Failed to load note')
       : null,
@@ -84,11 +98,14 @@ export const useNote = (id: string) => {
 
 export const useCreateNote = () => {
   const queryClient = useQueryClient()
+  const { user } = useAuth()
+  const userId = user?.id
 
   const mutation = useMutation({
     mutationFn: (payload: CreateNotePayload) => noteService.create(payload),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: noteKeys.all })
+      if (!userId) return
+      void queryClient.invalidateQueries({ queryKey: noteKeys.all(userId) })
     },
   })
 
@@ -103,6 +120,8 @@ export const useCreateNote = () => {
 
 export const useUpdateNote = () => {
   const queryClient = useQueryClient()
+  const { user } = useAuth()
+  const userId = user?.id
 
   const mutation = useMutation({
     mutationFn: ({
@@ -113,9 +132,10 @@ export const useUpdateNote = () => {
       payload: UpdateNotePayload
     }) => noteService.update(id, payload),
     onSuccess: (_data, variables) => {
-      void queryClient.invalidateQueries({ queryKey: noteKeys.all })
+      if (!userId) return
+      void queryClient.invalidateQueries({ queryKey: noteKeys.all(userId) })
       void queryClient.invalidateQueries({
-        queryKey: noteKeys.detail(variables.id),
+        queryKey: noteKeys.detail(userId, variables.id),
       })
     },
   })
@@ -132,12 +152,15 @@ export const useUpdateNote = () => {
 
 export const useDeleteNote = () => {
   const queryClient = useQueryClient()
+  const { user } = useAuth()
+  const userId = user?.id
 
   const mutation = useMutation({
     mutationFn: (id: string) => noteService.delete(id),
     onSuccess: (_data, id) => {
-      void queryClient.invalidateQueries({ queryKey: noteKeys.all })
-      void queryClient.removeQueries({ queryKey: noteKeys.detail(id) })
+      if (!userId) return
+      void queryClient.invalidateQueries({ queryKey: noteKeys.all(userId) })
+      void queryClient.removeQueries({ queryKey: noteKeys.detail(userId, id) })
     },
   })
 
@@ -152,12 +175,17 @@ export const useDeleteNote = () => {
 
 export const useArchiveNote = () => {
   const queryClient = useQueryClient()
+  const { user } = useAuth()
+  const userId = user?.id
 
   const mutation = useMutation({
     mutationFn: (id: string) => noteService.archive(id),
     onSuccess: (_data, id) => {
-      void queryClient.invalidateQueries({ queryKey: noteKeys.all })
-      void queryClient.invalidateQueries({ queryKey: noteKeys.detail(id) })
+      if (!userId) return
+      void queryClient.invalidateQueries({ queryKey: noteKeys.all(userId) })
+      void queryClient.invalidateQueries({
+        queryKey: noteKeys.detail(userId, id),
+      })
     },
   })
 
